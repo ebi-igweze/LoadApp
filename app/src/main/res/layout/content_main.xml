@@ -6,8 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:padding="15dp"
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
+
+    <RadioGroup
+        android:id="@+id/downloadOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.udacity.LoadingButton
         android:id="@+id/custom_button"

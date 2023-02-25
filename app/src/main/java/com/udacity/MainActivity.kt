@@ -9,39 +9,69 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import com.udacity.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
 
     private var downloadID: Long = 0
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
 
+    private var selectedOptionId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        setupDownloadOptions()
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-        custom_button.setOnClickListener {
+        binding.mainContent.customButton.setOnClickListener {
             download()
         }
     }
 
-    private val receiver = object : BroadcastReceiver() {
+    private fun setupDownloadOptions() {
+        val radioGroup = binding.mainContent.downloadOptions
+        // create radio button for each download option
+        for (option in DownloadOption.values()) {
+            val radioOption = layoutInflater
+                .inflate(R.layout.download_option_radio, radioGroup, false) as RadioButton
+
+            radioOption.tag = option.name
+            radioOption.text = option.simpleName
+            radioOption.id = option.ordinal
+            radioOption.isChecked = option.ordinal == selectedOptionId
+            radioGroup.addView(radioOption)
+        }
+
+        radioGroup.setOnCheckedChangeListener { _, id -> selectedOptionId = id }
+    }
+
+    private val receiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         }
     }
 
     private fun download() {
+        if (selectedOptionId == -1) {
+            val hintMessage = "Please select an option above, to download the file"
+            Toast.makeText(this, hintMessage, Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val selectedOption = selectedOptionId.asDownloadOption()
         val request =
             DownloadManager.Request(Uri.parse(URL))
                 .setTitle(getString(R.string.app_name))
