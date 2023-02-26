@@ -7,9 +7,9 @@ enum class DownloadOption(val url: String) {
 
     val simpleName: String get() {
         return when (this) {
-            GLIDE -> "Glide"
-            RETROFIT -> "Retrofit"
-            ADVANCED_ANDROID -> "Advanced Android"
+            GLIDE -> "Glide - Image Loading Library by BumpTech"
+            RETROFIT -> "Retrofit - Type-Safe HTTP client library for Android by Square.Inc"
+            ADVANCED_ANDROID -> "File Loader - Current repository by Udacity"
         }
     }
 }
