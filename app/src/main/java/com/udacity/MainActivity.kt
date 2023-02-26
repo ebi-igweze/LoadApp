@@ -22,7 +22,6 @@ class MainActivity: AppCompatActivity() {
     private var downloadID: Long = 0
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
 
     private var selectedOptionId: Int = -1
@@ -50,7 +49,6 @@ class MainActivity: AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         createNotificationChannel()
-        createPendingIntent()
         setupDownloadOptions()
     }
 
@@ -65,12 +63,16 @@ class MainActivity: AppCompatActivity() {
         )
     }
 
-    private fun createPendingIntent() {
+    private fun createPendingIntent(): PendingIntent {
         val detailIntent = Intent(
             applicationContext,
             DetailActivity::class.java
+        ).putExtra(
+            DetailActivity.DOWNLOAD_OPTION_KEY,
+            selectedOptionId.asDownloadOption().name
         )
-        pendingIntent = PendingIntent.getActivity(
+
+        return PendingIntent.getActivity(
             applicationContext,
             NotificationUtils.NOTIFICATION_ID,
             detailIntent,
@@ -124,6 +126,8 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun showNotification() {
+        val pendingIntent = createPendingIntent()
+
         NotificationUtils.sendNotification(
             applicationContext,
             notificationManager,

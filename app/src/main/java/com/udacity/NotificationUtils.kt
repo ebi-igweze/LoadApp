@@ -55,4 +55,8 @@ object NotificationUtils {
             nm.createNotificationChannel(notificationChannel)
         }
     }
+
+    fun cancelNotification(nm: NotificationManager) {
+        nm.cancel(NOTIFICATION_ID)
+    }
 }

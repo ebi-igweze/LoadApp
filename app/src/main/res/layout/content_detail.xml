@@ -4,8 +4,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".DetailActivity"
     tools:showIn="@layout/activity_detail">
+
+    <TextView
+        android:id="@+id/fileNameLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="File Name"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="@+id/fileName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fileName"
+        app:layout_constraintBottom_toBottomOf="@+id/fileName"
+        />
+
+    <TextView
+        android:id="@+id/fileName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fileNameLabel"
+        tools:text="Glide - Image Loading Library by BumpTech"
+        />
+
+
+    <TextView
+        android:id="@+id/fileStatusLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Status"
+        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fileName"
+        app:layout_constraintEnd_toStartOf="@id/fileStatus"
+        app:layout_constraintBottom_toBottomOf="@+id/fileStatus"
+        />
+
+    <TextView
+        android:id="@+id/fileStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="@id/fileStatusLabel"
+        app:layout_constraintStart_toEndOf="@+id/fileStatusLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Success"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/ok_button"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
+        android:text="@android:string/ok"
+        app:backgroundTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
