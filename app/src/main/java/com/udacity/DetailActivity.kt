@@ -34,6 +34,7 @@ class DetailActivity : AppCompatActivity() {
         binding.detailContent.apply {
             fileName.text = option.simpleName
             fileStatus.text = "SUCCESS"
+            fileStatus.setTextColor(getColor(R.color.colorPrimary))
         }
 
     }
