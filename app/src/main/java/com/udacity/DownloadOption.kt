@@ -9,7 +9,7 @@ enum class DownloadOption(val url: String) {
         return when (this) {
             GLIDE -> "Glide - Image Loading Library by BumpTech"
             RETROFIT -> "Retrofit - Type-Safe HTTP client library for Android by Square.Inc"
-            ADVANCED_ANDROID -> "File Loader - Current repository by Udacity"
+            ADVANCED_ANDROID -> "LoadApp - Current repository by Udacity"
         }
     }
 }

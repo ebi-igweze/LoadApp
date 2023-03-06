@@ -66,6 +66,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="60dp"
         android:text="@android:string/ok"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
