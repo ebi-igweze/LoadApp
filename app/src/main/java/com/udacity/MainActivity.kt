@@ -145,13 +145,4 @@ class MainActivity: AppCompatActivity() {
         // remove broadcast receiver
         unregisterReceiver(receiver)
     }
-
-    companion object {
-
-        private const val DETAIL_REQUEST_CODE = 121212
-        private const val URL =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-
-    }
-
 }

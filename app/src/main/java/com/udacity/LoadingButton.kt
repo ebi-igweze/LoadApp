@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
@@ -11,15 +12,16 @@ import android.view.animation.DecelerateInterpolator
 import androidx.core.content.ContextCompat
 import kotlin.properties.Delegates
 
+
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var widthSize = 0
-    private var heightSize = 0
+    var textRect = Rect()
 
     private val backgroundColor: Int
     private val textColor: Int
     private val loadingColor: Int
+    private val circularLoaderColor: Int
     private val paint: Paint
 
     private val valueAnimator: ValueAnimator
@@ -57,6 +59,7 @@ class LoadingButton @JvmOverloads constructor(
             ContextCompat.getColor(context, R.color.colorPrimaryDark)
         )
 
+        circularLoaderColor =  ContextCompat.getColor(context, R.color.colorAccent)
         customAttrs.recycle()
 
 
@@ -85,17 +88,34 @@ class LoadingButton @JvmOverloads constructor(
         // draw button background
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
 
-        // show loading background if loading
+        val buttonText = resources.getString(buttonState.text)
         if (buttonState == ButtonState.Loading) {
             paint.color = loadingColor
             val progressWidth = width * (animationProgress / 100)
+            // show loading background if loading
             canvas.drawRect(0f, 0f, progressWidth, height.toFloat(), paint)
+
+            // show circular loader
+            // set circle loader color
+            paint.color = circularLoaderColor
+            // get the bounds for the text
+            paint.getTextBounds(buttonText, 0, buttonText.length - 1, textRect)
+            // use button center and text center to get left edge, and some 30f padding
+            val left = (width / 2f) + (textRect.right / 2f) + 30f
+
+            // compute the values for the animated arc
+            val top = (height / 2f) - 30f
+            val right = left + (paint.textSize)
+            val bottom = top + (paint.textSize)
+            val startAngle = 0f
+            val sweepAngle = (360f * animationProgress) / 100f
+            // draw circular progress
+            canvas.drawArc(left, top, right, bottom, startAngle, sweepAngle, true, paint)
         }
 
 
         // show button text
         paint.color = textColor
-        val buttonText = resources.getString(buttonState.text)
         canvas.drawText(buttonText, (width / 2f), (height + 30f) / 2f, paint)
     }
 
