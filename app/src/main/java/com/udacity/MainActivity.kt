@@ -15,15 +15,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.udacity.databinding.ActivityMainBinding
+import java.util.TimerTask
+import kotlin.coroutines.suspendCoroutine
 
 
 class MainActivity: AppCompatActivity() {
 
-    private var downloadID: Long = 0
-
+    private var downloadID: Long = -1
     private lateinit var binding: ActivityMainBinding
-    private lateinit var action: NotificationCompat.Action
-
     private var selectedOptionId: Int = -1
 
 
@@ -35,10 +34,15 @@ class MainActivity: AppCompatActivity() {
     }
 
     private val receiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            // set download as complete
+            binding.mainContent.customButton.completeDownload()
+            showNotification()
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -70,6 +74,9 @@ class MainActivity: AppCompatActivity() {
         ).putExtra(
             DetailActivity.DOWNLOAD_OPTION_KEY,
             selectedOptionId.asDownloadOption().name
+        ).putExtra(
+            DetailActivity.DOWNLOAD_OPTION_ID,
+            downloadID
         )
 
         return PendingIntent.getActivity(
@@ -109,20 +116,21 @@ class MainActivity: AppCompatActivity() {
             return
         }
 
-        showNotification()
-        
-//        val selectedOption = selectedOptionId.asDownloadOption()
-//        val request =
-//            DownloadManager.Request(Uri.parse(selectedOption.url))
-//                .setTitle(getString(R.string.app_name))
-//                .setDescription(getString(R.string.app_description))
-//                .setRequiresCharging(false)
-//                .setAllowedOverMetered(true)
-//                .setAllowedOverRoaming(true)
-//
-//        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-//        downloadID =
-//            downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+        // change button state
+        binding.mainContent.customButton.buttonState = ButtonState.Loading
+
+        val selectedOption = selectedOptionId.asDownloadOption()
+        val request =
+            DownloadManager.Request(Uri.parse(selectedOption.url))
+                .setTitle(getString(R.string.app_name))
+                .setDescription(getString(R.string.app_description))
+                .setRequiresCharging(false)
+                .setAllowedOverMetered(true)
+                .setAllowedOverRoaming(true)
+
+        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        // put the download request in the queue.
+        downloadID = downloadManager.enqueue(request)
     }
 
     private fun showNotification() {
@@ -133,6 +141,12 @@ class MainActivity: AppCompatActivity() {
             notificationManager,
             pendingIntent
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // remove broadcast receiver
+        unregisterReceiver(receiver)
     }
 
     companion object {

@@ -51,6 +51,8 @@ class DetailActivity : AppCompatActivity() {
 
     companion object {
         const val DOWNLOAD_OPTION_KEY = "download_option_key"
+        const val DOWNLOAD_OPTION_ID = "download_option_id"
+
     }
 
 }
