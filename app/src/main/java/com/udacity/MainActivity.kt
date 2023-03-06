@@ -12,11 +12,8 @@ import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.udacity.databinding.ActivityMainBinding
-import java.util.TimerTask
-import kotlin.coroutines.suspendCoroutine
 
 
 class MainActivity: AppCompatActivity() {
@@ -75,7 +72,7 @@ class MainActivity: AppCompatActivity() {
             DetailActivity.DOWNLOAD_OPTION_KEY,
             selectedOptionId.asDownloadOption().name
         ).putExtra(
-            DetailActivity.DOWNLOAD_OPTION_ID,
+            DetailActivity.DOWNLOAD_ID,
             downloadID
         )
 

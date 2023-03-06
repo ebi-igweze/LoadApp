@@ -1,5 +1,7 @@
 package com.udacity
 
+import android.annotation.SuppressLint
+import android.app.DownloadManager
 import android.app.NotificationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_detail.*
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var option: DownloadOption
+    private var downloadId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +22,7 @@ class DetailActivity : AppCompatActivity() {
         val downloadOptionName = intent.getStringExtra(DOWNLOAD_OPTION_KEY)
             ?: throw IllegalArgumentException("No value passed for download option")
         option = DownloadOption.valueOf(downloadOptionName)
+        downloadId = intent.getLongExtra(DOWNLOAD_ID, -1L)
 
         setSupportActionBar(toolbar)
         cancelNotification()
@@ -30,11 +34,27 @@ class DetailActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("Range")
     private fun showFileDownloadStatus() {
+        // get the download status
+        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+
+        val query = DownloadManager.Query()
+        query.setFilterById(downloadId)
+        val cursor = downloadManager.query(query)
+        var isSuccessful = false
+        with(cursor) {
+            if (moveToFirst()) {
+                val status: Int = getInt(getColumnIndex(DownloadManager.COLUMN_STATUS))
+                isSuccessful = (status == DownloadManager.STATUS_SUCCESSFUL)
+            }
+        }
+
         binding.detailContent.apply {
             fileName.text = option.simpleName
-            fileStatus.text = "SUCCESS"
-            fileStatus.setTextColor(getColor(R.color.colorPrimary))
+            fileStatus.text =  if (isSuccessful) "SUCCESS" else "FAILED"
+            val color = if (isSuccessful) R.color.colorPrimary else android.R.color.holo_red_dark
+            fileStatus.setTextColor(getColor(color))
         }
 
     }
@@ -51,7 +71,7 @@ class DetailActivity : AppCompatActivity() {
 
     companion object {
         const val DOWNLOAD_OPTION_KEY = "download_option_key"
-        const val DOWNLOAD_OPTION_ID = "download_option_id"
+        const val DOWNLOAD_ID = "download_option_id"
 
     }
 
